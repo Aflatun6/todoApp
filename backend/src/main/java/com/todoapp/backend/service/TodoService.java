@@ -1,7 +1,12 @@
 package com.todoapp.backend.service;
 
-import com.todoapp.backend.model.Todo;
+import com.todoapp.backend.dto.CreateTodoReq;
+import com.todoapp.backend.dto.TodoRes;
+import com.todoapp.backend.dto.UpdateTodoReq;
+import com.todoapp.backend.entity.Todo;
+import com.todoapp.backend.mapper.TodoMapperImpl;
 import com.todoapp.backend.repository.TodoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -10,28 +15,35 @@ import java.util.List;
 @Service
 public class TodoService {
     private final TodoRepository repository;
+    private final TodoMapperImpl mapper;
 
-    public TodoService(TodoRepository repository) {
+    @Autowired
+    public TodoService(TodoRepository repository, TodoMapperImpl mapper) {
         this.repository = repository;
+        this.mapper = mapper;
     }
 
-    public List<Todo> getAll() {
-        return repository.findAll();
+    public List<TodoRes> getAll() {
+        return repository.findAll().stream().map(mapper::entityToReturnTODO).toList();
+
     }
 
-    public Todo create(Todo todo) {
-        todo.setCreatedAt(LocalDateTime.now());
-        todo.setUpdatedAt(LocalDateTime.now());
-        return repository.save(todo);
+    public TodoRes create(CreateTodoReq todo) {
+        Todo dtoToEntity = mapper.createDtoToEntity(todo);
+
+        dtoToEntity.setCreatedAt(LocalDateTime.now());
+        dtoToEntity.setUpdatedAt(LocalDateTime.now());
+
+        return mapper.entityToReturnTODO(repository.save(dtoToEntity));
     }
 
-    public Todo update(String id, Todo patch) {
+    public TodoRes update(String id, UpdateTodoReq patch) {
         return repository.findById(id).map(todo -> {
             if (patch.getTitle() != null) todo.setTitle(patch.getTitle());
             if (patch.getDescription() != null) todo.setDescription(patch.getDescription());
             if (patch.getStatus() != null) todo.setStatus(patch.getStatus());
             todo.setUpdatedAt(LocalDateTime.now());
-            return repository.save(todo);
+            return mapper.entityToReturnTODO(repository.save(todo));
         }).orElseThrow(() -> new RuntimeException("Todo not found"));
     }
 

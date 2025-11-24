@@ -1,6 +1,8 @@
 package com.todoapp.backend.controller;
 
-import com.todoapp.backend.model.Todo;
+import com.todoapp.backend.dto.CreateTodoReq;
+import com.todoapp.backend.dto.TodoRes;
+import com.todoapp.backend.dto.UpdateTodoReq;
 import com.todoapp.backend.service.TodoService;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,17 +20,17 @@ public class TodoController {
     }
 
     @GetMapping
-    public List<Todo> getAll() {
+    public List<TodoRes> getAll() {
         return service.getAll();
     }
 
     @PostMapping
-    public Todo create(@RequestBody Todo todo) {
+    public TodoRes create(@RequestBody CreateTodoReq todo) {
         return service.create(todo);
     }
 
     @PatchMapping("/{id}")
-    public Todo update(@PathVariable String id, @RequestBody Todo patch) {
+    public TodoRes update(@PathVariable String id, @RequestBody UpdateTodoReq patch) {
         return service.update(id, patch);
     }
 

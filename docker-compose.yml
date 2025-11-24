@@ -5,19 +5,21 @@ services:
     ports:
       - "8080:80"
     restart: unless-stopped
+    depends_on:
+      - backend
 
-    backend:
-      image: todo-backend
-      ports:
-        - "8081:8081"
-    #   depends_on:
-    #     - db
+  backend:
+    image: todo-backend
+    ports:
+      - "8081:8081"
+    depends_on:
+      - db
 
-    # db:
-    #   image: postgres:17
-    #   environment:
-    #     POSTGRES_USER: todo
-    #     POSTGRES_PASSWORD: todo
-    #     POSTGRES_DB: todo
-    #   ports:
-    #     - "5432:5432"
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: todo
+      POSTGRES_PASSWORD: todo
+      POSTGRES_DB: todo
+    ports:
+      - "5432:5432"
