@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Todo } from '../types';
 
-const API_URL = 'http://localhost:8081/api/v1/todos'; // backend
+// const API_URL = 'http://backend:8081/api/v1/todos'; // backend
+// @ts-ignore
+const API_URL = import.meta.env.VITE_API_URL!;
 
 export function useTodos() {
   const [todos, setTodos] = useState<Todo[]>([]);

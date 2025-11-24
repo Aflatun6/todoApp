@@ -4,7 +4,8 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm ci --silent
 COPY . .
-RUN npm run build
+COPY .env.production /app/.env.production
+RUN npm run build -- --mode production
 
 # production stage
 FROM nginx:stable-alpine
